@@ -12,9 +12,10 @@ private:
 	float speed_Xf;
 	float speed_Yf;
 	float time = 10.0f;//球运动的时间
+	float newX, newY;
 public:
-	const float Speed_X_Max = 240.0f;
-	const float Speed_Y_Max = 240.0f;
+	//const float Speed_X_Max = 240.0f;
+	//const float Speed_Y_Max = 240.0f;
 	const float Speed_Xf_Max = 3.5f;
 	const float Speed_Yf_Max = 2.0f;
 	//球的碰撞状态

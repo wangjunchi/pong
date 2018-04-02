@@ -4,7 +4,7 @@ bool LoadLayer::init()
 	Label *label = Label::createWithTTF("Loading......", "fonts/Marker Felt.ttf", 24);
 	label->setPosition(Vec2(240, 180));
 	this->addChild(label);
-	scheduleOnce(CC_SCHEDULE_SELECTOR(LoadLayer::onScheduleOnce), 2);
+	scheduleOnce(CC_SCHEDULE_SELECTOR(LoadLayer::onScheduleOnce), 1);
 	return true;
 }
 

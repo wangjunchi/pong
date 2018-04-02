@@ -181,15 +181,20 @@ void GameLayer::update(float delta)
 			if (ball->collFlag != ball->ballToDownBad)
 			{
 				float speed_Y = ball->getSpeed_Yf();
-				//log("%f", speed_Y);
-				speed_Y = speed_Y* -1 +0.1;
+				log("%f", speed_Y);
+				//speed_Y = speed_Y* -1 +0.1;
 				//log("%f", speed_Y);
 				//log("pong!");
-				ball->stopAllActions();
-				ball->setSpeed_Yf(speed_Y);
+				//ball->stopAllActions();
+				//ball->setSpeed_Yf(speed_Y);
+				ball->setSpeed_Yf(ball->getSpeed_Yf()*(-1.0f) + 0.1);
 				ball->setSpeed_Xf(ball->getSpeed_Xf() + badMinton_1->getSpeed_X()*0.7 / 60);
-				if (ball->getSpeed_Xf() > ball->Speed_Xf_Max)
+				if (ball->getSpeed_Xf() > ball->Speed_Xf_Max&&ball->getSpeed_Xf() > 0)
 					ball->setSpeed_Xf(ball->Speed_Xf_Max);
+				if (ball->getSpeed_Xf() < -1 * ball->Speed_Xf_Max && ball->getSpeed_Xf() < 0)
+					ball->setSpeed_Xf(ball->Speed_Xf_Max*-1);
+				if (ball->getSpeed_Yf() > ball->Speed_Yf_Max)
+					ball->setSpeed_Yf(ball->Speed_Yf_Max);
 				ball->collFlag = ball->ballToDownBad;
 			}
 
@@ -201,17 +206,24 @@ void GameLayer::update(float delta)
 		{
 			if (ball->collFlag != ball->ballToUpBad)
 			{
+				float speed = ball->getSpeed_Yf();
+				log("%f", speed);
 				ball->setSpeed_Yf(ball->getSpeed_Yf()*(-1.0f)-0.1);
 				ball->setSpeed_Xf(ball->getSpeed_Xf() + badMinton_2->getSpeed_X()*0.7 / 60);
-				if (ball->getSpeed_Xf() > ball->Speed_Xf_Max)
+				//限速
+				if (ball->getSpeed_Xf() > ball->Speed_Xf_Max&&ball->getSpeed_Xf() > 0)
 					ball->setSpeed_Xf(ball->Speed_Xf_Max);
+				 if (ball->getSpeed_Xf() < -1 * ball->Speed_Xf_Max&&ball->getSpeed_Xf() < 0)
+					ball->setSpeed_Xf(ball->Speed_Xf_Max*-1);
+				 if (ball->getSpeed_Yf() < -1 * ball->Speed_Yf_Max)
+					 ball->setSpeed_Yf(ball->Speed_Yf_Max*-1);
 				ball->collFlag = ball->ballToUpBad;
 			}
 
 		}
 		//与墙的检测碰撞
-		else if ((ball->getPosition().x - wall_L->getPosition().x) < ball->boundingBox().size.width / 2 + 1 ||
-			(wall_R->getPosition().x - ball->getPosition().x) < ball->boundingBox().size.width / 2 + 1)
+		else if ((ball->getPosition().x - wall_L->getPosition().x) < ball->boundingBox().size.width / 2 + wall_L->getBoundingBox().size.width/2 ||
+			(wall_R->getPosition().x - ball->getPosition().x) < ball->boundingBox().size.width / 2 + wall_R->getBoundingBox().size.width/2)
 		{
 			if (ball->collFlag != ball->ballToWall)//判断球的碰撞，防止在墙里来回弹
 			{
@@ -221,14 +233,13 @@ void GameLayer::update(float delta)
 
 		}
 		//如果超出窗口则复位
-		else if (ball->getPositionY() + 10 < 0)
+		if (ball->getPositionY() + 10 < 0)
 		{
 			//复位
 			auto moveTo_Resume = MoveTo::create(0, Vec2(winSize.width / 2, winSize.height * 0.9 - 10));
-			ball->resumeFlag = ball->upBad;
 			ball->runAction(moveTo_Resume);
-			ball->ball_Started = false;	//恢复空格响应
-			ball->collFlag = ball->noCollision;
+			ball->resumeFlag = ball->upBad;
+			ball->resume();
 			//记分板加1
 			badMinton_2->scoreAdded();
 			char str[10] = { '0' };
@@ -239,17 +250,17 @@ void GameLayer::update(float delta)
 		else if (ball->getPositionY() - 10 > winSize.height)
 		{
 			//复位
+			//ball->setPosition( Vec2(winSize.width / 2, winSize.height * 0.1 + 10));
 			auto moveTo_Resume = MoveTo::create(0, Vec2(winSize.width / 2, winSize.height * 0.1 + 10));
-			ball->resumeFlag = ball->downBad;
 			ball->runAction(moveTo_Resume);
-			ball->ball_Started = false;	//状态位归位（恢复空格响应）
-			ball->collFlag = ball->noCollision;
+			ball->resumeFlag = ball->downBad;
+			ball->resume();
 			//记分板加1
 			badMinton_1->scoreAdded();
 			char str[10] = { '0' };
 			sprintf(str, "%d", badMinton_1->getScore());
 			scoreLabelDown->setString(str);
-			ball->resume();
+			
 		}
 	}
 }

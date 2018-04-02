@@ -12,7 +12,7 @@
 #include "LoadLayer.h"
 #include "OepenLayer.h"
 #include "GameLayer.h"
-
+#include "HelpLayer.h"
 //创建加载的场景（假的）
 void SceneManager::createLoadScene()
 {
@@ -41,4 +41,14 @@ void SceneManager::goToGameScene()
 	gameScene->addChild(layer);
 	Director::getInstance()->replaceScene(gameScene);
 
+}
+
+//跳转到帮助界面
+void SceneManager::goToHelpScene()
+{
+	helpScene = Scene::create();
+	HelpLayer *layer = HelpLayer::create();
+	layer->tsm = this;
+	helpScene->addChild(layer);
+	Director::getInstance()->replaceScene(helpScene);
 }
